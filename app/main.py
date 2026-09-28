@@ -3,11 +3,16 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
+import os
+from dotenv import load_dotenv
 
 from .database import Base, engine, get_db
 from .models import User
 from .schemas import RegisterRequest, LoginRequest, TotpVerifyRequest, TokenResponse
 from .auth import hash_password, verify_password, create_access_token, create_pre_auth_token, verify_pre_auth_token
+
+load_dotenv()
+FRONT_END_ORIGIN = os.getenv("FRONT_END_ORIGIN")
 
 app = FastAPI(
     title="Robolox server",
@@ -16,7 +21,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5501", ],
+    allow_origins=[FRONT_END_ORIGIN, ],
     allow_credentials=True,
     allow_headers=["*"],
     allow_methods=["*"]
